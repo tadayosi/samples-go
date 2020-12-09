@@ -2,6 +2,7 @@ package mapper
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -10,13 +11,14 @@ import (
 )
 
 type Object struct {
-	PropOne   bool   `property:"prop-one" json:"propOne"`
-	PropTwo   int    `property:"prop-two" json:"propTwo"`
-	PropThree string `property:"prop-three" json:"propThree"`
+	PropOne   *bool  `property:"prop-one" json:"propOne,omitempty"`
+	PropTwo   int    `property:"prop-two" json:"propTwo,omitempty"`
+	PropThree string `property:"prop-three" json:"propThree,omitempty"`
 }
 
-type Object2 struct {
-	Raw []byte `json:",inline"`
+func (o *Object) String() string {
+	return fmt.Sprintf("Object[PropOne=%v, PropTwo=%v, PropThree=%v]",
+		o.PropOne, o.PropTwo, o.PropThree)
 }
 
 func TestMap2Object(t *testing.T) {
@@ -26,7 +28,7 @@ func TestMap2Object(t *testing.T) {
 		"prop-three": "test",
 	}
 	obj := &Object{
-		PropOne:   true,
+		PropOne:   &[]bool{true}[0],
 		PropTwo:   0,
 		PropThree: "",
 	}
@@ -43,14 +45,14 @@ func TestMap2Object(t *testing.T) {
 
 	err = decoder.Decode(data)
 	assert.Nil(t, err)
-	assert.False(t, obj.PropOne)
+	assert.False(t, *obj.PropOne)
 	assert.Equal(t, 1, obj.PropTwo)
 	assert.Equal(t, "test", obj.PropThree)
 }
 
 func TestObject2JSON(t *testing.T) {
 	obj := &Object{
-		PropOne:   false,
+		PropOne:   &[]bool{false}[0],
 		PropTwo:   1,
 		PropThree: "test",
 	}
@@ -61,6 +63,20 @@ func TestObject2JSON(t *testing.T) {
 	assert.JSONEq(t, `{"propOne":false,"propTwo":1,"propThree":"test"}`, string(data))
 }
 
+func TestObject2JSON_PropOneEmpty(t *testing.T) {
+	obj := &Object{
+		//PropOne:   &[]bool{false}[0],
+		PropTwo:   1,
+		PropThree: "test",
+	}
+	assert.Nil(t, obj.PropOne)
+
+	data, err := json.Marshal(obj)
+
+	assert.Nil(t, err)
+	assert.JSONEq(t, `{"propTwo":1,"propThree":"test"}`, string(data))
+}
+
 func TestMap2Object2JSON(t *testing.T) {
 	data := map[string]interface{}{
 		"prop-one":   "false",
@@ -68,7 +84,7 @@ func TestMap2Object2JSON(t *testing.T) {
 		"prop-three": "test",
 	}
 	o := &Object{
-		PropOne:   true,
+		PropOne:   &[]bool{true}[0],
 		PropTwo:   0,
 		PropThree: "",
 	}
@@ -99,7 +115,7 @@ func TestJSON2Object(t *testing.T) {
 	err := json.Unmarshal(data, obj)
 
 	assert.Nil(t, err)
-	assert.False(t, obj.PropOne)
+	assert.False(t, *obj.PropOne)
 	assert.Equal(t, 1, obj.PropTwo)
 	assert.Equal(t, "test", obj.PropThree)
 }

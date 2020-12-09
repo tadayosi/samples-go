@@ -1,4 +1,4 @@
-module tadayosi.github.com/samples
+module github.com/tadayosi/samples-go
 
 go 1.15
 

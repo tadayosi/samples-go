@@ -1,7 +1,8 @@
-package mapstruct
+package mapper
 
 import (
 	"encoding/json"
+	"reflect"
 	"testing"
 
 	"github.com/mitchellh/mapstructure"
@@ -9,9 +10,9 @@ import (
 )
 
 type Object struct {
-	Prop1 bool   `property:"prop1" json:"prop1"`
-	Prop2 int    `property:"prop2" json:"prop2"`
-	Prop3 string `property:"prop3" json:"prop3"`
+	PropOne   bool   `property:"prop-one" json:"propOne"`
+	PropTwo   int    `property:"prop-two" json:"propTwo"`
+	PropThree string `property:"prop-three" json:"propThree"`
 }
 
 type Object2 struct {
@@ -20,11 +21,15 @@ type Object2 struct {
 
 func TestMap2Object(t *testing.T) {
 	data := map[string]interface{}{
-		"prop1": "false",
-		"prop2": "1",
-		"prop3": "test",
+		"prop-one":   "false",
+		"prop-two":   "1",
+		"prop-three": "test",
 	}
-	obj := &Object{}
+	obj := &Object{
+		PropOne:   true,
+		PropTwo:   0,
+		PropThree: "",
+	}
 
 	decoder, err := mapstructure.NewDecoder(
 		&mapstructure.DecoderConfig{
@@ -38,32 +43,63 @@ func TestMap2Object(t *testing.T) {
 
 	err = decoder.Decode(data)
 	assert.Nil(t, err)
-	assert.False(t, obj.Prop1)
-	assert.Equal(t, 1, obj.Prop2)
-	assert.Equal(t, "test", obj.Prop3)
+	assert.False(t, obj.PropOne)
+	assert.Equal(t, 1, obj.PropTwo)
+	assert.Equal(t, "test", obj.PropThree)
 }
 
 func TestObject2JSON(t *testing.T) {
 	obj := &Object{
-		Prop1: false,
-		Prop2: 1,
-		Prop3: "test",
+		PropOne:   false,
+		PropTwo:   1,
+		PropThree: "test",
 	}
 
 	data, err := json.Marshal(obj)
 
 	assert.Nil(t, err)
-	assert.JSONEq(t, `{"prop1":false,"prop2":1,"prop3":"test"}`, string(data))
+	assert.JSONEq(t, `{"propOne":false,"propTwo":1,"propThree":"test"}`, string(data))
+}
+
+func TestMap2Object2JSON(t *testing.T) {
+	data := map[string]interface{}{
+		"prop-one":   "false",
+		"prop-two":   "1",
+		"prop-three": "test",
+	}
+	o := &Object{
+		PropOne:   true,
+		PropTwo:   0,
+		PropThree: "",
+	}
+	obj := reflect.New(reflect.TypeOf(o)).Interface()
+
+	decoder, err := mapstructure.NewDecoder(
+		&mapstructure.DecoderConfig{
+			Metadata:         &mapstructure.Metadata{},
+			WeaklyTypedInput: true,
+			TagName:          "property",
+			Result:           obj,
+		},
+	)
+	assert.Nil(t, err)
+
+	err = decoder.Decode(data)
+
+	result, err := json.Marshal(obj)
+
+	assert.Nil(t, err)
+	assert.JSONEq(t, `{"propOne":false,"propTwo":1,"propThree":"test"}`, string(result))
 }
 
 func TestJSON2Object(t *testing.T) {
-	data := []byte(`{"prop1":false,"prop2":1,"prop3":"test"}`)
+	data := []byte(`{"propOne":false,"propTwo":1,"propThree":"test"}`)
 	obj := &Object{}
 
 	err := json.Unmarshal(data, obj)
 
 	assert.Nil(t, err)
-	assert.False(t, obj.Prop1)
-	assert.Equal(t, 1, obj.Prop2)
-	assert.Equal(t, "test", obj.Prop3)
+	assert.False(t, obj.PropOne)
+	assert.Equal(t, 1, obj.PropTwo)
+	assert.Equal(t, "test", obj.PropThree)
 }

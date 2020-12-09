@@ -11,7 +11,7 @@ import (
 )
 
 type Object struct {
-	PropOne   *bool  `property:"prop-one" json:"propOne,omitempty"`
+	PropOne   bool   `property:"prop-one" json:"propOne,omitempty"`
 	PropTwo   int    `property:"prop-two" json:"propTwo,omitempty"`
 	PropThree string `property:"prop-three" json:"propThree,omitempty"`
 }
@@ -28,7 +28,7 @@ func TestMap2Object(t *testing.T) {
 		"prop-three": "test",
 	}
 	obj := &Object{
-		PropOne:   &[]bool{true}[0],
+		PropOne:   true, //&[]bool{true}[0],
 		PropTwo:   0,
 		PropThree: "",
 	}
@@ -45,14 +45,14 @@ func TestMap2Object(t *testing.T) {
 
 	err = decoder.Decode(data)
 	assert.Nil(t, err)
-	assert.False(t, *obj.PropOne)
+	assert.False(t, obj.PropOne)
 	assert.Equal(t, 1, obj.PropTwo)
 	assert.Equal(t, "test", obj.PropThree)
 }
 
 func TestObject2JSON(t *testing.T) {
 	obj := &Object{
-		PropOne:   &[]bool{false}[0],
+		PropOne:   false, //&[]bool{false}[0],
 		PropTwo:   1,
 		PropThree: "test",
 	}
@@ -69,7 +69,7 @@ func TestObject2JSON_PropOneEmpty(t *testing.T) {
 		PropTwo:   1,
 		PropThree: "test",
 	}
-	assert.Nil(t, obj.PropOne)
+	assert.False(t, obj.PropOne)
 
 	data, err := json.Marshal(obj)
 
@@ -84,7 +84,7 @@ func TestMap2Object2JSON(t *testing.T) {
 		"prop-three": "test",
 	}
 	o := &Object{
-		PropOne:   &[]bool{true}[0],
+		PropOne:   true, //&[]bool{true}[0],
 		PropTwo:   0,
 		PropThree: "",
 	}
@@ -115,7 +115,7 @@ func TestJSON2Object(t *testing.T) {
 	err := json.Unmarshal(data, obj)
 
 	assert.Nil(t, err)
-	assert.False(t, *obj.PropOne)
+	assert.False(t, obj.PropOne)
 	assert.Equal(t, 1, obj.PropTwo)
 	assert.Equal(t, "test", obj.PropThree)
 }

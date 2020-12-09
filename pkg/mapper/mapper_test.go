@@ -28,10 +28,12 @@ func TestMap2Object(t *testing.T) {
 		"prop-three": "test",
 	}
 	obj := &Object{
-		PropOne:   &[]bool{true}[0],
+		//PropOne:   &[]bool{true}[0],
 		PropTwo:   0,
 		PropThree: "",
 	}
+	propOne := true
+	obj.PropOne = &propOne
 
 	decoder, err := mapstructure.NewDecoder(
 		&mapstructure.DecoderConfig{
@@ -52,10 +54,12 @@ func TestMap2Object(t *testing.T) {
 
 func TestObject2JSON(t *testing.T) {
 	obj := &Object{
-		PropOne:   &[]bool{false}[0],
+		//PropOne:   &[]bool{false}[0],
 		PropTwo:   1,
 		PropThree: "test",
 	}
+	propOne := false
+	obj.PropOne = &propOne
 
 	data, err := json.Marshal(obj)
 

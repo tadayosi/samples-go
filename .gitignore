@@ -1,0 +1,9 @@
+.*
+!.editorconfig
+!.gitignore
+
+*.log
+
+build/
+node_modules/
+samples

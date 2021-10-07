@@ -101,6 +101,7 @@ func TestMap2Object2JSON(t *testing.T) {
 	assert.Nil(t, err)
 
 	err = decoder.Decode(data)
+	assert.Nil(t, err)
 
 	result, err := json.Marshal(obj)
 

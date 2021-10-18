@@ -1,3 +1,5 @@
+.DEFAULT_GOAL := test
+
 build: lint
 	go build .
 

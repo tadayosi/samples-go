@@ -11,7 +11,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var count int
+
 func flaky() error {
+	count++
+	fmt.Printf("count = %d\n", count)
 	i := rand.Intn(3)
 	if i > 0 {
 		return fmt.Errorf("i = %d", i)
@@ -21,27 +25,16 @@ func flaky() error {
 
 func TestRetry(t *testing.T) {
 	rand.Seed(time.Now().UnixNano())
-	count := 0
-	err := retry.Do(func() error {
-		count++
-		fmt.Printf("count = %d\n", count)
-		return flaky()
-	}, retry.Attempts(10))
+	count = 0
+
+	err := retry.Do(flaky, retry.Attempts(10))
 	assert.Nil(t, err)
 }
 
-func TestGomegaRetry(t *testing.T) {
+func TestEventually(t *testing.T) {
 	rand.Seed(time.Now().UnixNano())
+	count = 0
 
-	g := NewGomegaWithT(t)
-
-	count := 0
-	err := retry.Do(func() error {
-		count++
-		fmt.Printf("count = %d\n", count)
-		g.Expect(flaky).To(BeNil())
-		return nil
-	}, retry.Attempts(10))
-
-	assert.Nil(t, err)
+	g := NewWithT(t)
+	g.Eventually(flaky).Should(BeNil())
 }

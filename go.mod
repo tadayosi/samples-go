@@ -7,6 +7,7 @@ require (
 	github.com/mitchellh/mapstructure v1.4.0
 	github.com/onsi/gomega v1.16.0
 	github.com/stretchr/testify v1.6.1
+	k8s.io/utils v0.0.0-20220210201930-3a6ce19ff2f9
 )
 
 require (

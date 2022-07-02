@@ -8,8 +8,7 @@ import (
 
 	"github.com/mitchellh/mapstructure"
 	"github.com/stretchr/testify/assert"
-
-	. "github.com/tadayosi/samples-go/util"
+	. "k8s.io/utils/pointer"
 )
 
 type Object struct {
@@ -35,7 +34,7 @@ func TestMap2Object(t *testing.T) {
 		"prop-three": "test",
 	}
 	obj := &Object{
-		PropOne:   BoolP(true),
+		PropOne:   Bool(true),
 		PropTwo:   0,
 		PropThree: "",
 	}
@@ -66,7 +65,7 @@ func TestMap2Child(t *testing.T) {
 	}
 	child := &Child{
 		Object: Object{
-			PropOne:   BoolP(true),
+			PropOne:   Bool(true),
 			PropTwo:   0,
 			PropThree: "",
 		},
@@ -94,7 +93,7 @@ func TestMap2Child(t *testing.T) {
 
 func TestObject2JSON(t *testing.T) {
 	obj := &Object{
-		PropOne:   BoolP(false),
+		PropOne:   Bool(false),
 		PropTwo:   1,
 		PropThree: "test",
 	}
@@ -108,7 +107,7 @@ func TestObject2JSON(t *testing.T) {
 func TestChild2JSON(t *testing.T) {
 	child := &Child{
 		Object: Object{
-			PropOne:   BoolP(false),
+			PropOne:   Bool(false),
 			PropTwo:   1,
 			PropThree: "test",
 		},
@@ -123,7 +122,7 @@ func TestChild2JSON(t *testing.T) {
 
 func TestObject2JSON_PropOneEmpty(t *testing.T) {
 	obj := &Object{
-		//PropOne:   BoolP(false),
+		//PropOne:   Bool(false),
 		PropTwo:   1,
 		PropThree: "test",
 	}
@@ -142,7 +141,7 @@ func TestMap2Object2JSON(t *testing.T) {
 		"prop-three": "test",
 	}
 	o := &Object{
-		PropOne:   BoolP(true),
+		PropOne:   Bool(true),
 		PropTwo:   0,
 		PropThree: "",
 	}
@@ -176,7 +175,7 @@ func TestMap2Child2JSON(t *testing.T) {
 	}
 	c := &Child{
 		Object: Object{
-			PropOne:   BoolP(true),
+			PropOne:   Bool(true),
 			PropTwo:   0,
 			PropThree: "",
 		},

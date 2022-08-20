@@ -14,16 +14,27 @@ func (a A) PrintA() {
 }
 
 type B struct {
-	A
 	valueB string
 }
 
 func (b B) PrintB() {
-	fmt.Printf("B: %s, A: %s\n", b.valueB, b.valueA)
+	fmt.Printf("B: %s\n", b.valueB)
+}
+
+type C struct {
+	A
+	B      B
+	valueC string
+}
+
+func (c C) PrintC() {
+	fmt.Printf("C: %s, B: %s, A: %s\n", c.valueC, c.B.valueB, c.valueA)
 }
 
 func TestObject(t *testing.T) {
-	b := B{A: A{valueA: "AAA"}, valueB: "BBB"}
-	b.PrintA()
-	b.PrintB()
+	c := C{A: A{valueA: "AAA"}, B: B{valueB: "BBB"}, valueC: "CCC"}
+	c.PrintA()
+	//c.PrintB() // compile error
+	c.B.PrintB()
+	c.PrintC()
 }

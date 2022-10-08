@@ -12,5 +12,5 @@ lint:
 
 install-gotestfmt:
 ifeq (, $(shell command -v gotestfmt 2> /dev/null))
-	go install github.com/haveyoudebuggedit/gotestfmt/v2/cmd/gotestfmt@latest
+	go install github.com/GoTestTools/gotestfmt/v2/cmd/gotestfmt@latest
 endif
